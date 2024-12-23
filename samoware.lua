@@ -29,6 +29,30 @@ local TICK_INTERVAL = engine.TickInterval()
 local MAX_TICKBASE_SHIFT = GetConVar("sv_maxusrcmdprocessticks"):GetInt() - 1
 local SCRW, SCRH = ScrW(), ScrH()
 
+function GetUserGroup(ply)
+    if ply.GetUserGroup then
+        return ply:GetUserGroup()
+    elseif ply.GetRankTable and ply:GetRankTable().NiceName then
+        // fix for RusEliteRP
+        return ply:GetRankTable().NiceName
+    else
+        return "unknown"
+    end
+end
+
+function GetTeam( ply )
+    local iTeam = ply:Team()
+
+    if rp and rp.GetJobWithoutDisguise then
+        local index = rp.GetJobWithoutDisguise( ply:EntIndex() ) 
+        local tbl = rp.jobs.List[ index ]
+
+        return index, tbl.Name, tbl.Color
+    else
+        return iTeam, team.GetName(iTeam), team.GetColor(iTeam)
+    end
+end
+
 file.CreateDir("swbase_cfg")
 
 surface.CreateFont("swcc_text_esp", {
@@ -574,6 +598,7 @@ local settings = {
 		BacktrackAmount = 0,
 		Forwardtrack = false,
 		ForwardtrackAmount = 0,
+		DisableAnimations = false,
 
 		-- Fakelag
 		FakeLag = false,
@@ -1154,6 +1179,7 @@ local function OpenHvHTab()
 
 	_ypos = 25
 
+	AddElement(NamedCheckbox, activetab, "DisableAnimations", rs)
 	AddElement(NamedCheckbox, activetab, "Resolver", rs)
 	AddElement(NamedCheckbox, activetab, "ResolveFakePitch", rs)
 	AddElement(ComboBox, activetab, "ResolverMode", {"Absolute", "Relative", "StatAbs", "StatRel"}, rs)
@@ -1696,7 +1722,7 @@ local function AddSpectator(ply)
 	local label = vgui.Create("DLabel", bindspnl)
 	label:Dock(TOP)
 	label:DockMargin(4, 0, 0, 0)
-	label:SetText(("%s %s"):format(ply:Nick(), ply:GetUserGroup()))
+	label:SetText(("%s %s"):format(ply:Nick(), GetUserGroup(ply)))
 
 	InitLabel(nil, nil, label)
 
@@ -2671,12 +2697,16 @@ function GetPlayers(mode, extrselfticks, extrplyticks, checkvis)
 
 	local tbl = {}
 	local plys = player.GetAll()
+	local iTeamLocal = GetTeam( me )
+
 	for i = 1, #plys do
 		local ply = plys[i]
+		local iTeamEnemy = GetTeam( ply )
+
 		if ply == me then continue end
 		if ply:IsDormant() or !ply:Alive() then continue end
 		if settings.Aimbot["Ignore bots"] and ply:IsBot() then continue end
-		if settings.Aimbot["Ignore team"] and ply:Team() == me:Team() then continue end
+		if settings.Aimbot["Ignore team"] and iTeamLocal == iTeamEnemy then continue end
 		if settings.Aimbot["Ignore friends"] and ply:GetFriendStatus() == "friend" then continue end
 		if settings.Aimbot["Ignore admins"] and ply:IsAdmin() then continue end
 
@@ -3033,6 +3063,11 @@ local function RemoveSpread(cmd, ang)
 		return angDir:Angle()
 	elseif class:StartWith("swb_") then
 		local function CalculateSpread()
+			local owner = weap.Owner
+			if owner == nil then
+				owner = me -- fix for RusEliteRP
+			end
+
 			local vel = me:GetVelocity():Length()
 			local dir = ang:Forward()
 
@@ -3047,14 +3082,14 @@ local function RemoveSpread(cmd, ang)
 			if weap.dt.State == SWB_AIMING then
 				weap.BaseCone = weap.AimSpread
 
-				if weap.Owner.Expertise then
-					weap.BaseCone = weap.BaseCone * (1 - weap.Owner.Expertise["steadyaim"].val * 0.0015)
+				if owner.Expertise then
+					weap.BaseCone = weap.BaseCone * (1 - owner.Expertise["steadyaim"].val * 0.0015)
 				end
 			else
 				weap.BaseCone = weap.HipSpread
 
-				if weap.Owner.Expertise then
-					weap.BaseCone = weap.BaseCone * (1 - weap.Owner.Expertise["wepprof"].val * 0.0015)
+				if owner.Expertise then
+					weap.BaseCone = weap.BaseCone * (1 - owner.Expertise["wepprof"].val * 0.0015)
 				end
 			end
 
@@ -4078,7 +4113,7 @@ local function ESP()
 		end
 
 		if settings.Visuals.Rank then
-			local rank = v:GetUserGroup()
+			local rank = GetUserGroup(v)
 
 			local tw, th = surface.GetTextSize(rank)
 
@@ -6643,6 +6678,12 @@ AddHook("CreateMove", function(cmd)
 end)
 
 end
+
+AddHook("CalcMainActivity", function(cmd)
+    if settings.HvH.DisableAnimations then
+        return -1, -1
+    end
+end)
 
 -- Utils
 do
