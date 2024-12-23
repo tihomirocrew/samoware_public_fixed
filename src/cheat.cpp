@@ -29,7 +29,7 @@ void Samoware::Initialize(HMODULE module) {
 	cfw::Logger::Get().SetLogLevel(cfw::LogLevel::DEBUG);
 
 	interfaces::setup();
-	luajit::setup();
+	//luajit::setup();
 	tier0::setup();
 	netvars::init();
 
@@ -43,15 +43,15 @@ void Samoware::Initialize(HMODULE module) {
 	hooks::CreateMoveHook::Get().Setup();
 	hooks::ClientModeCreateMoveHook::Get().Setup();
 	hooks::PaintTraverseHook::Get().Setup();
-	hooks::SetupBonesHook::Get().Setup();
+	//hooks::SetupBonesHook::Get().Setup();
 	hooks::IsPlayingTimeDemoHook::Get().Setup();
 	hooks::CheckForSequenceChangeHook::Get().Setup();
 	// hooks::RunCommandHook::Get().Setup();
 	// hooks::PacketStartHook::Get().Setup();
 	hooks::impact::hook();
-	hooks::CL_MoveHook::Get().Setup();
+	//hooks::CL_MoveHook::Get().Setup();
 	
-	hooks::StringDumpHook::Get().Setup();
+	hooks::StringDumpHook::Get().Setup(); 
 }
 
 void Samoware::Unload() {

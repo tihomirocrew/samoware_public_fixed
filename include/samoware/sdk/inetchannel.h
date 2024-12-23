@@ -240,7 +240,7 @@ public:
 	}
 
 	void SetupVMT() {
-		static void** vmt = reinterpret_cast<void**>(cfw::getAbsAddr(cfw::findPattern("engine.dll", "FF C0 03 F8 48 89 B4 24 E8 10 00 00 48 8D 05") + 12));
+		static void** vmt = reinterpret_cast<void**>(cfw::getAbsAddr(cfw::findPattern("engine.dll", "FF C0 03 F8 C6 44 24 ?? ?? 48 8D 05") + 9));
 		*reinterpret_cast<void***>(this) = vmt;
 	}
 

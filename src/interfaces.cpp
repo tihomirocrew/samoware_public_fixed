@@ -111,7 +111,7 @@ namespace interfaces {
 
 		std::uintptr_t clMovePtr = cfw::findPattern("engine.dll", "40 55 53 48 8D AC 24 38 F0 FF FF B8 C8 10 00 00 E8 ?? ?? ?? ?? 48 2B E0 0F 29 B4 24 B0 10 00 00");
 		if (clMovePtr) {
-			void* chokedCommandsPtr = cfw::getAbsAddr(clMovePtr + 0x110, 2);
+			void* chokedCommandsPtr = cfw::getAbsAddr(clMovePtr + 0x10E, 2);
 			clientState = reinterpret_cast<CClientState*>(reinterpret_cast<std::uintptr_t>(chokedCommandsPtr) - offsetof(CClientState, chokedcommands) - 1);
 
 			cfw::Logger::Get().Log<cfw::LogLevel::DEBUG>("CClientState: 0x", std::hex, clientState);

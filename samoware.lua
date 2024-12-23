@@ -5926,7 +5926,6 @@ local nextact = 0
 local boost_cvars = {
 	["gmod_mcore_test"] = 1,
 	["r_3dsky"] = 0,
-	["gmod_mcore_test"] = 1,
 	["snd_mix_async"] = 1,
 	["cl_threaded_bone_setup"] = 1,
 	["cl_threaded_client_leaf_system"] = 1,
@@ -5948,7 +5947,12 @@ local boost_cvars = {
 
 local old_cvars = {}
 for k, v in pairs(boost_cvars) do
-	old_cvars[k] = GetConVar(k):GetFloat()
+	local convar = GetConVar(k)
+	if convar == nil then
+		print("failed to find boost cvar: " .. k)
+	else
+		old_cvars[k] = convar:GetFloat()
+	end
 end
 
 local fps_boosted = false

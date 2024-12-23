@@ -4,6 +4,8 @@
 		 
 #include "samoware/sdk/chlclient.h"
 
+#include <string>
+
 namespace netvars {
 	std::unordered_map<std::string, int> netvars;
 

@@ -15,6 +15,9 @@
 #include "samoware/config.h"
 #include "samoware/globals.h"
 
+#include "samoware/fonts/Anonymous_Pro.h"
+#include "samoware/fonts/Anonymous_Pro_B.h"
+
 #include "cfw/basefunchook.h"
 
 #include "imgui/imgui_internal.h"
@@ -91,8 +94,8 @@ void SamowareMenu::SetupStyle() {
 	ImFontConfig cfg;
 
 	auto& fonts = ImGui::GetIO().Fonts;
-	_anonymousPro = fonts->AddFontFromFileTTF("D:/VSProjects/samowarev2/Anonymous_Pro.ttf", 15.f, &cfg);
-	_anonymousProBold = fonts->AddFontFromFileTTF("D:/VSProjects/samowarev2/Anonymous_Pro_B.ttf", 18.f, &cfg);
+	_anonymousPro = fonts->AddFontFromMemoryTTF(Anonymous_Pro_Font, sizeof(Anonymous_Pro_Font), 15.f, &cfg);
+	_anonymousProBold = fonts->AddFontFromMemoryTTF(Anonymous_Pro_B_Font, sizeof(Anonymous_Pro_B_Font), 18.f, &cfg);
 }
 
 void SamowareMenu::DrawTabs() {

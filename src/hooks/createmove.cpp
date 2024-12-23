@@ -35,7 +35,7 @@ namespace hooks {
 			SendNetMsgHook::Get().Setup();
 
 			std::uintptr_t clMovePtr = cfw::findPattern("engine.dll", "40 55 53 48 8D AC 24 38 F0 FF FF B8 C8 10 00 00 E8 ?? ?? ?? ?? 48 2B E0 0F 29 B4 24 B0 10 00 00");
-			jePtr = reinterpret_cast<void*>(clMovePtr + 0x16a);
+			jePtr = reinterpret_cast<void*>(clMovePtr + 0x168);
 
 			DWORD dummy;
 			VirtualProtect(jePtr, 8, PAGE_EXECUTE_READWRITE, &dummy);
@@ -84,12 +84,12 @@ namespace hooks {
 		// external::setR14b(!globals.forceChoke && !globals.shouldChoke);
 		if (!globals.forceChoke && !globals.shouldChoke) {
 			// bSendPacket = true
-			static uint8_t jeBytes[] = {0x0f, 0x84, 0xBD, 0x02, 0x00, 0x00};
-			memcpy(jePtr, jeBytes, 6);
+			static uint8_t jzBytes[] = { 0x0f, 0x84, 0x04, 0x01, 0x00, 0x00 };
+			memcpy(jePtr, jzBytes, 6);
 		} else {
 			// bSendPacket = false
-			static uint8_t jmpBytes[] = {0xe9, 0xbe, 0x02, 0x00, 0x00, 0x90};
-			memcpy(jePtr, jmpBytes, 6);
+			static uint8_t jnzBytes[] = { 0x0f, 0x85, 0x04, 0x01, 0x00, 0x00 };
+			memcpy(jePtr, jnzBytes, 6);
 		}
 
 		/*auto& out = cmds.emplace_back();

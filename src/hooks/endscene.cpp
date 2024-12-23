@@ -52,7 +52,7 @@ namespace hooks {
 	#ifdef _WIN64
 		device = *reinterpret_cast<IDirect3DDevice9**>(cfw::getAbsAddr(cfw::findPattern("shaderapidx9.dll", "3D 7C 01 76 88 74 07 3D 0E 00 07 80 75 34 48 8B 0D") + 14));
 	#else
-		device = **(reinterpret_cast<IDirect3DDevice9***>(findPattern("shaderapidx9.dll", "A1 ?? ?? ?? ?? 50 8B 08 FF 51 0C") + 1));
+		device = **(reinterpret_cast<IDirect3DDevice9***>(cfw::findPattern("shaderapidx9.dll", "A1 ?? ?? ?? ?? 50 8B 08 FF 51 0C") + 1));
 	#endif
 
 		assert(device);

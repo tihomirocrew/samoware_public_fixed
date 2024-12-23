@@ -58,7 +58,7 @@ class CBaseAnimating : public CBaseEntity {
 public:
 	VPROXY(SetupBones, 16, bool, (matrix3x4_t* pBoneToWorldOut, int nMaxBones, int boneMask), pBoneToWorldOut, nMaxBones, boneMask);
 
-	OFFSETVAR(CBasePlayerAnimState*, GetAnimState, 0x3610);
+	OFFSETVAR(CBasePlayerAnimState*, GetAnimState, 0x3620);
 	NETVAR(bool, DT_BaseAnimating, m_bClientSideAnimation);
 	NETVAR(float, DT_BaseAnimating, m_flModelScale);
 };
@@ -73,10 +73,10 @@ public:
 	bool IsInWater() { return GetWaterLevel() != WaterLevel::NotInWater; }
 	bool IsInNoclip() { return GetMoveType() == MoveType::NOCLIP; }
 
-	VPROXY(UpdateClientsideAnimation, 236, void, (void));
+	VPROXY(UpdateClientsideAnimation, 235, void, (void));
 
 	// CPrediction__RunCommand 2 line
-	OFFSETVAR(CUserCmd*, GetCurrentCommand, 0x2C50);
+	OFFSETVAR(CUserCmd*, GetCurrentCommand, 0x2C60);
 
 	NETVAR(char, DT_GMOD_Player, m_nWaterLevel);
 
@@ -100,5 +100,5 @@ public:
 	NETVAR(CBaseEntity*, DT_BasePlayer, m_hGroundEntity);
 
 	// IDA strings
-	OFFSETVAR(float, GetFallVelocity, 92);
+	OFFSETVAR(float, GetFallVelocity, 90);
 };
